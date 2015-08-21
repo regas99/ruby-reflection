@@ -24,18 +24,25 @@ module Spy
   def self.set_methud
     klazz = self.set_klass
     klazz::class_eval do
+      puts "methud defined? #{method_defined?(Spy.methud)}"
       if method_defined?(Spy.methud)
         # save an existing method
+        puts "...aliasing..."
         alias_method :real_method, Spy.methud
       else
         # or create a noop method
+        puts "...new noop method..."
         define_method :real_method do; end;
       end
-    end
-    puts "methud is #{Spy.methud}"
-    define_method Spy.methud do
-      increment
-      real_method
+      puts "defining #{Spy.methud} over #{klazz}"
+      old = klazz.methods
+      define_method Spy.methud do
+        puts "executing..."
+        Spy.increment
+        real_method
+      end
+      new = klazz.methods
+      puts "new methods: #{new-old}"
     end
   end
 
