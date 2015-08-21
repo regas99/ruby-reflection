@@ -1,15 +1,18 @@
 module Spy
+  attr_reader :count, :class, :method
+
   def self.initialize
-    puts "initializing Soy for #{ENV["COUNT_CALLS_TO"]}"
-    if !ENV["COUNT_CALLS_TO"]
-      puts "Spy module called with no ENV['COUNT_CALLS_TO'] set"
-      Rails.logger.info("Spy module called with no ENV['COUNT_CALLS_TO'] set")
-      return
-    end
+    puts "initializing Spy for #{ENV["COUNT_CALLS_TO"]}"
     @count = 0
     @class, @method = ENV['COUNT_CALLS_TO'].split('#')
+    puts "#{@class}##{@method} => #{@count}"
   end
 
-  @@instance = self.initialize
+  if ENV["COUNT_CALLS_TO"]
+    @@instance = self.initialize
+  else
+    puts "Spy module called with no ENV['COUNT_CALLS_TO'] set"
+  end
+
 end
 
